@@ -22,6 +22,7 @@ func ApiStart() {
 	UserHandler := handler.NewUserHandler(UserService)
 
 	app.Post("/register", UserHandler.HandleRegister)
+	app.Post("/login", UserHandler.HandleLogin)
 	//-----------------User-----------------
 	app.Listen(":" + loader.GetPort())
 

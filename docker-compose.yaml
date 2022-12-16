@@ -19,3 +19,36 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: Qwe3698*+
       ME_CONFIG_MONGODB_URL: mongodb://root:Qwe3698*+@mongo:27017/
+
+  redis-master:
+    image: 'bitnami/redis:latest'
+    restart: always
+    ports:
+      -  6379:6379
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - REDIS_PASSWORD=Qwe3698*+
+    volumes:
+      - /bitnami
+
+  redis-replica:
+    image: 'bitnami/redis:latest'
+    restart: always
+    ports:
+      - '6379'
+    depends_on:
+      - redis-master
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PORT_NUMBER=6379
+      - REDIS_MASTER_PASSWORD=Qwe3698*+
+      - REDIS_PASSWORD=Qwe3698*+
+
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    restart: always
+    ports:
+      - '8001:8001'
+    volumes:
+      - /db

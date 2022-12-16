@@ -4,22 +4,35 @@ import (
 	"appVersionControl/api/dto"
 	"appVersionControl/api/models"
 	"appVersionControl/api/repository"
-	"fmt"
 )
 
 type UserService struct {
 	UserRepository *repository.UserRepository
 }
 
-func (service *UserService) SerRegister(registerModel models.RegisterModel) (dto.RegisterDto, error) {
+func (service *UserService) SerRegister(registerModel models.RegisterModel) dto.RegisterDto {
 	var s = service.UserRepository
-	//-----------------RepoRegister----------------------
-	dto, err := s.RepoRegister(registerModel)
-	//-----------------RepoRegister----------------------
-	if err != nil {
-		fmt.Printf("Register error %v", err)
+
+	// ---------Check if the user exists----------
+	check := s.RepoUserCheck(registerModel)
+	if check {
+		return dto.RegisterDto{
+			Error:          "User already exists",
+			HttpStatusCode: 400,
+			Result:         nil,
+		}
 	}
-	return dto, err
+
+	// ---------Check if the user exists----------
+
+	//-----------------RepoRegister----------------------
+	dto := s.RepoRegister(registerModel)
+	//-----------------RepoRegister----------------------
+	return dto
+}
+func (service *UserService) SerLogin(loginModel models.LoginModel) dto.LoginDto {
+	var s = service.UserRepository
+	return s.RepoLogin(loginModel)
 }
 
 func NewUserService(userRepository *repository.UserRepository) *UserService {
