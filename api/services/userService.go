@@ -2,6 +2,7 @@ package services
 
 import (
 	"appVersionControl/api/dto"
+	"appVersionControl/api/jwt"
 	"appVersionControl/api/models"
 	"appVersionControl/api/repository"
 )
@@ -32,7 +33,13 @@ func (service *UserService) SerRegister(registerModel models.RegisterModel) dto.
 }
 func (service *UserService) SerLogin(loginModel models.LoginModel) dto.LoginDto {
 	var s = service.UserRepository
-	return s.RepoLogin(loginModel)
+	dto := s.RepoLogin(loginModel)
+	if dto.Result != nil {
+		dto.Result.Token = jwt.SetLoginState(dto.Result.Username)
+	}
+
+	return dto
+
 }
 
 func NewUserService(userRepository *repository.UserRepository) *UserService {

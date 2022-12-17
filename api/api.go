@@ -14,6 +14,9 @@ func ApiStart() {
 	loader.Loader()
 	var DB *mongo.Client = config.ConnectDB(loader.GetMongoUri())
 	collection := config.GetCollection(DB, "users")
+	//-----------------State----------------------
+
+	//-----------------State----------------------
 	app := fiber.New()
 
 	//-----------------User-----------------
